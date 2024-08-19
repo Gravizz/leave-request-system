@@ -16,7 +16,7 @@ const LeaveRequestList = () => {
       const response = await axios.get(
         'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
         {
-          params: { name: searchName, startDate: searchDate, sort: sortOrder },
+          params: { name: searchName, date: searchDate, sort: sortOrder },
         }
       );
       setLeaveRequests(response.data);

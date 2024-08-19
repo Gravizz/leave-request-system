@@ -78,10 +78,13 @@ app.post('/api/leave-requests', async (req, res) => {
 
 app.get('/api/leave-requests', async (req, res) => {
   try {
-    const { name, startDate, sort } = req.query;
+    const { name, date, sort } = req.query;
     let query = {};
     if (name) query.name = new RegExp(name, 'i');
-    if (startDate) query.startDate = { $gte: new Date(startDate) };
+    if (date) {
+      query.startDate = { $lte: new Date(date) };
+      query.endDate = { $gte: new Date(date) };
+    }
 
     const sortOption = sort === 'asc' ? { createdAt: 1 } : { createdAt: -1 };
 
