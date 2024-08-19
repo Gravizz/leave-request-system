@@ -10,18 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // เชื่อมต่อ MongoDB
-mongoose.connect('mongodb://localhost:27017/crud');
-// mongoose
-//   .connect(process.env.MONGODB_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log('Connected to MongoDB');
-//   })
-//   .catch((err) => {
-//     console.error('Error connecting to MongoDB:', err.message);
-//   });
+mongoose.connect(process.env.MONGODB_URI);
 
 // สร้าง Schema สำหรับการลา
 const leaveRequestSchema = new mongoose.Schema({
