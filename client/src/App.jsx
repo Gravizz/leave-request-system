@@ -125,7 +125,7 @@ function App() {
       }
     };
 
-    addTestData();
+    // addTestData();
   }, []);
 
   return (
