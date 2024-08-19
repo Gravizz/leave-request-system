@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const Modal = ({ isOpen, onClose, onConfirm, message }) => {
+  const [isConfirming, setIsConfirming] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleConfirm = async () => {
+    if (isConfirming) return; // Prevent confirming if already confirming
+    setIsConfirming(true);
+    try {
+      await onConfirm(); // Execute the onConfirm action
+    } catch (error) {
+      console.error('Error during confirm action:', error);
+    } finally {
+      setIsConfirming(false); // Reset state after action completes
+      onClose(); // Close modal after confirmation
+    }
+  };
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -16,14 +31,15 @@ const Modal = ({ isOpen, onClose, onConfirm, message }) => {
           >
             ยกเลิก
           </button>
-          {onConfirm && (
-            <button
-              onClick={onConfirm}
-              className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md"
-            >
-              ยืนยัน
-            </button>
-          )}
+          <button
+            onClick={handleConfirm}
+            disabled={isConfirming} // Disable button during confirmation
+            className={`bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md ${
+              isConfirming ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {isConfirming ? 'กำลังดำเนินการ...' : 'ยืนยัน'}
+          </button>
         </div>
       </div>
     </div>,

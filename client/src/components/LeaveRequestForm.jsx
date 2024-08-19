@@ -15,17 +15,56 @@ const LeaveRequestForm = ({ onSubmit }) => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    const nameParts = formData.name.trim().split(' ');
+    const phoneNumberPattern = /^0[689]{1}[0-9]{8}$/;
+
+    // Validate name
+    if (nameParts.length < 2) newErrors.name = 'กรุณากรอกชื่อและนามสกุล';
+
+    // Validate phone number (Thai format: 0x-xxxx-xxxx)
+    if (!phoneNumberPattern.test(formData.phoneNumber.trim())) {
+      newErrors.phoneNumber = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง';
+    }
+
+    // Validate reason
+    if (!formData.reason.trim())
+      newErrors.reason = 'กรุณากรอกสาเหตุการลาให้ถูกต้อง';
+
+    // Validate dates
+    if (!formData.startDate) newErrors.startDate = 'กรุณากรอกวันที่เริ่มต้น';
+    if (!formData.endDate) newErrors.endDate = 'กรุณากรอกวันที่สิ้นสุด';
+    if (
+      formData.startDate &&
+      formData.endDate &&
+      formData.startDate > formData.endDate
+    ) {
+      newErrors.dateRange = 'วันที่เริ่มต้นต้องไม่หลังวันที่สิ้นสุด';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return; // If validation fails, stop submission
+
     setIsModalOpen(true); // Show confirmation modal
   };
 
   const handleConfirm = async () => {
+    setIsSubmitting(true); // Set loading state
+
     try {
       const response = await axios.post(
         'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
@@ -49,6 +88,7 @@ const LeaveRequestForm = ({ onSubmit }) => {
     } catch (error) {
       alert(error.response.data.message);
     } finally {
+      setIsSubmitting(false); // Reset loading state
       setIsModalOpen(false); // Close confirmation modal
     }
   };
@@ -67,8 +107,12 @@ const LeaveRequestForm = ({ onSubmit }) => {
           onChange={handleChange}
           placeholder="ชื่อ - นามสกุล"
           required
-          className="w-full p-2 border rounded"
+          className={`w-full p-2 border rounded ${
+            errors.name ? 'border-red-500' : ''
+          }`}
         />
+        {errors.name && <p className="text-red-500">{errors.name}</p>}
+
         <input
           type="text"
           name="department"
@@ -77,6 +121,7 @@ const LeaveRequestForm = ({ onSubmit }) => {
           placeholder="สังกัด/ตำแหน่ง"
           className="w-full p-2 border rounded"
         />
+
         <input
           type="email"
           name="email"
@@ -85,6 +130,7 @@ const LeaveRequestForm = ({ onSubmit }) => {
           placeholder="อีเมล์"
           className="w-full p-2 border rounded"
         />
+
         <input
           type="tel"
           name="phoneNumber"
@@ -92,8 +138,14 @@ const LeaveRequestForm = ({ onSubmit }) => {
           onChange={handleChange}
           placeholder="เบอร์โทรศัพท์"
           required
-          className="w-full p-2 border rounded"
+          className={`w-full p-2 border rounded ${
+            errors.phoneNumber ? 'border-red-500' : ''
+          }`}
         />
+        {errors.phoneNumber && (
+          <p className="text-red-500">{errors.phoneNumber}</p>
+        )}
+
         <select
           name="leaveType"
           value={formData.leaveType}
@@ -106,14 +158,19 @@ const LeaveRequestForm = ({ onSubmit }) => {
           <option value="พักร้อน">พักร้อน</option>
           <option value="อื่นๆ">อื่นๆ</option>
         </select>
+
         <textarea
           name="reason"
           value={formData.reason}
           onChange={handleChange}
           placeholder="สาเหตุการลา"
           required
-          className="w-full p-2 border rounded"
+          className={`w-full p-2 border rounded ${
+            errors.reason ? 'border-red-500' : ''
+          }`}
         ></textarea>
+        {errors.reason && <p className="text-red-500">{errors.reason}</p>}
+
         <div className="flex justify-between items-center space-x-4">
           <div className="flex-1">
             <label
@@ -129,9 +186,15 @@ const LeaveRequestForm = ({ onSubmit }) => {
               onChange={handleChange}
               required
               id="startDate"
-              className="w-full p-2 border rounded"
+              className={`w-full p-2 border rounded ${
+                errors.startDate ? 'border-red-500' : ''
+              }`}
             />
+            {errors.startDate && (
+              <p className="text-red-500">{errors.startDate}</p>
+            )}
           </div>
+
           <div className="flex-1">
             <label
               htmlFor="endDate"
@@ -146,15 +209,24 @@ const LeaveRequestForm = ({ onSubmit }) => {
               onChange={handleChange}
               required
               id="endDate"
-              className="w-full p-2 border rounded"
+              className={`w-full p-2 border rounded ${
+                errors.endDate ? 'border-red-500' : ''
+              }`}
             />
+            {errors.endDate && <p className="text-red-500">{errors.endDate}</p>}
           </div>
         </div>
+        {errors.dateRange && <p className="text-red-500">{errors.dateRange}</p>}
+
         <button
           type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded"
+          disabled={isSubmitting} // Disable button when submitting
+          className={`w-full p-2 rounded ${
+            isSubmitting ? 'bg-gray-400' : 'bg-blue-500'
+          } text-white`}
         >
-          บันทึกการลา
+          {isSubmitting ? 'กำลังบันทึก...' : 'บันทึกการลา'}{' '}
+          {/* Show loading text */}
         </button>
       </form>
       <Modal
