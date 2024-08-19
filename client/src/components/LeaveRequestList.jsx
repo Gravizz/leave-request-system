@@ -56,6 +56,28 @@ const LeaveRequestList = () => {
     }
   };
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'อนุมัติ':
+        return 'bg-green-100 text-green-800';
+      case 'ไม่อนุมัติ':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800'; // สำหรับ 'รอพิจารณา'
+    }
+  };
+
+  const getButtonClass = (status) => {
+    switch (status) {
+      case 'อนุมัติ':
+        return 'bg-green-500 hover:bg-green-600';
+      case 'ไม่อนุมัติ':
+        return 'bg-red-500 hover:bg-red-600';
+      default:
+        return 'bg-yellow-500 hover:bg-yellow-600'; // สำหรับ 'รอพิจารณา'
+    }
+  };
+
   return (
     <div className="p-4">
       <div className="mb-4 flex space-x-4">
@@ -98,24 +120,32 @@ const LeaveRequestList = () => {
               key={request._id}
               className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
             >
-              <td className="border p-3 w-1/3">{request.name}</td>
-              <td className="border p-3">{request.leaveType}</td>
-              <td className="border p-3">
+              <td className="border p-3 text-center w-1/3">{request.name}</td>
+              <td className="border p-3 text-center">{request.leaveType}</td>
+              <td className="border p-3 text-center">
                 <p>
                   {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
                   {new Date(request.endDate).toLocaleDateString()}
                 </p>
               </td>
-              <td className="border p-3">
+              <td className="border p-3 text-center">
                 {new Date(request.createdAt).toLocaleTimeString()}
               </td>
-              <td className="border p-3">{request.status}</td>
-              <td className="border p-3 flex space-x-2">
+              <td
+                className={`border p-3 text-center ${getStatusClass(
+                  request.status
+                )}`}
+              >
+                {request.status}
+              </td>
+              <td className="border p-3 text-center flex space-x-2 justify-center">
                 {request.status === 'รอพิจารณา' && (
                   <>
                     <button
                       onClick={() => handleStatusChange(request._id, 'อนุมัติ')}
-                      className="bg-green-500 text-white p-2 rounded-md shadow hover:bg-green-600 transition"
+                      className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                        'อนุมัติ'
+                      )}`}
                     >
                       อนุมัติ
                     </button>
@@ -123,7 +153,9 @@ const LeaveRequestList = () => {
                       onClick={() =>
                         handleStatusChange(request._id, 'ไม่อนุมัติ')
                       }
-                      className="bg-yellow-500 text-white p-2 rounded-md shadow hover:bg-yellow-600 transition"
+                      className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                        'ไม่อนุมัติ'
+                      )}`}
                     >
                       ไม่อนุมัติ
                     </button>
@@ -131,7 +163,7 @@ const LeaveRequestList = () => {
                 )}
                 <button
                   onClick={() => handleDelete(request._id)}
-                  className="bg-red-500 text-white p-2 rounded-md shadow hover:bg-red-600 transition"
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
                 >
                   ลบ
                 </button>
