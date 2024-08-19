@@ -127,7 +127,7 @@ const LeaveRequestForm = ({ onSubmit }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="อีเมล์"
+          placeholder="อีเมล"
           className="w-full p-2 border rounded"
         />
 
