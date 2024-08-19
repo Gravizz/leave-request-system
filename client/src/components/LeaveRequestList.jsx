@@ -75,7 +75,7 @@ const LeaveRequestList = () => {
       <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
         <thead className="bg-gray-200">
           <tr>
-            <th className="border p-3 text-left">ชื่อ</th>
+            <th className="border p-3 text-left w-1/3">ชื่อ</th>
             <th className="border p-3 text-left">ประเภทการลา</th>
             <th className="border p-3 text-left">วันที่ลา</th>
             <th className="border p-3 text-left">เวลาที่บันทึก</th>
@@ -89,7 +89,7 @@ const LeaveRequestList = () => {
               key={request._id}
               className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
             >
-              <td className="border p-3">{request.name}</td>
+              <td className="border p-3 w-1/3">{request.name}</td>
               <td className="border p-3">{request.leaveType}</td>
               <td className="border p-3">
                 {new Date(request.startDate).toLocaleDateString()} -
