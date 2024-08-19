@@ -130,14 +130,20 @@ function App() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">ระบบขออนุญาตลาหยุด</h1>
+      <h1 className="text-2xl text-center font-bold mb-4">
+        ระบบขออนุญาตลาหยุด
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h2 className="text-xl font-semibold mb-2">บันทึกการลา</h2>
+          <h2 className="text-xl text-center font-semibold mb-2">
+            บันทึกการลา
+          </h2>
           <LeaveRequestForm onSubmit={handleSubmit} />
         </div>
         <div>
-          <h2 className="text-xl font-semibold mb-2">รายการขอลาหยุด</h2>
+          <h2 className="text-xl text-center font-semibold mb-2">
+            รายการขอลาหยุด
+          </h2>
           <LeaveRequestList key={refreshList} />
         </div>
       </div>

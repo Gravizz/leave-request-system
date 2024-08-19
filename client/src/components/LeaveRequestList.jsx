@@ -75,12 +75,12 @@ const LeaveRequestList = () => {
       <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
         <thead className="bg-gray-200">
           <tr>
-            <th className="border p-3 text-left w-1/3">ชื่อ</th>
-            <th className="border p-3 text-left">ประเภทการลา</th>
-            <th className="border p-3 text-left">วันที่ลา</th>
-            <th className="border p-3 text-left">เวลาที่บันทึก</th>
-            <th className="border p-3 text-left">สถานะ</th>
-            <th className="border p-3 text-left">การดำเนินการ</th>
+            <th className="border p-3 text-center w-1/3">ชื่อ</th>
+            <th className="border p-3 text-center">ประเภทการลา</th>
+            <th className="border p-3 text-center">วันที่ลา</th>
+            <th className="border p-3 text-center">เวลาที่บันทึก</th>
+            <th className="border p-3 text-center">สถานะ</th>
+            <th className="border p-3 text-center">การดำเนินการ</th>
           </tr>
         </thead>
         <tbody>
