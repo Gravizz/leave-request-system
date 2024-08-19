@@ -21,7 +21,7 @@ const LeaveRequestForm = ({ onSubmit }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/leave-requests',
+        'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
         formData
       );
       onSubmit(response.data);

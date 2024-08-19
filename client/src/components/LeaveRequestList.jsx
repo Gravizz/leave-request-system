@@ -14,7 +14,7 @@ const LeaveRequestList = () => {
   const fetchLeaveRequests = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/leave-requests',
+        'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
         {
           params: { name: searchName, startDate: searchDate, sort: sortOrder },
         }
@@ -28,7 +28,9 @@ const LeaveRequestList = () => {
   const handleDelete = async (id) => {
     if (window.confirm('คุณแน่ใจหรือไม่ที่จะลบรายการนี้?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/leave-requests/${id}`);
+        await axios.delete(
+          `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`
+        );
         fetchLeaveRequests();
       } catch (error) {
         console.error('Error deleting leave request:', error);
@@ -38,9 +40,12 @@ const LeaveRequestList = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/api/leave-requests/${id}`, {
-        status: newStatus,
-      });
+      await axios.patch(
+        `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`,
+        {
+          status: newStatus,
+        }
+      );
       fetchLeaveRequests();
     } catch (error) {
       console.error('Error updating leave request status:', error);
