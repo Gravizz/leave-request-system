@@ -39,16 +39,20 @@ const LeaveRequestList = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    try {
-      await axios.patch(
-        `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`,
-        {
-          status: newStatus,
-        }
-      );
-      fetchLeaveRequests();
-    } catch (error) {
-      console.error('Error updating leave request status:', error);
+    if (
+      window.confirm(`คุณแน่ใจหรือไม่ที่จะเปลี่ยนสถานะเป็น "${newStatus}"?`)
+    ) {
+      try {
+        await axios.patch(
+          `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`,
+          {
+            status: newStatus,
+          }
+        );
+        fetchLeaveRequests();
+      } catch (error) {
+        console.error('Error updating leave request status:', error);
+      }
     }
   };
 
