@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from './Modal';
 
 const LeaveRequestList = () => {
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [searchName, setSearchName] = useState('');
   const [searchDate, setSearchDate] = useState('');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmMessage, setConfirmMessage] = useState('');
 
   useEffect(() => {
     fetchLeaveRequests();
@@ -26,7 +30,8 @@ const LeaveRequestList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('คุณแน่ใจหรือไม่ที่จะลบรายการนี้?')) {
+    setConfirmMessage('คุณแน่ใจหรือไม่ที่จะลบรายการนี้?');
+    setConfirmAction(() => async () => {
       try {
         await axios.delete(
           `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`
@@ -35,25 +40,26 @@ const LeaveRequestList = () => {
       } catch (error) {
         console.error('Error deleting leave request:', error);
       }
-    }
+      setModalOpen(false);
+    });
+    setModalOpen(true);
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    if (
-      window.confirm(`คุณแน่ใจหรือไม่ที่จะเปลี่ยนสถานะเป็น "${newStatus}"?`)
-    ) {
+    setConfirmMessage(`คุณแน่ใจหรือไม่ที่จะเปลี่ยนสถานะเป็น "${newStatus}"?`);
+    setConfirmAction(() => async () => {
       try {
         await axios.patch(
           `https://leave-request-system-server-cj6i.vercel.app/api/leave-requests/${id}`,
-          {
-            status: newStatus,
-          }
+          { status: newStatus }
         );
         fetchLeaveRequests();
       } catch (error) {
         console.error('Error updating leave request status:', error);
       }
-    }
+      setModalOpen(false);
+    });
+    setModalOpen(true);
   };
 
   const getStatusClass = (status) => {
@@ -109,7 +115,7 @@ const LeaveRequestList = () => {
             <th className="border p-3 text-center w-1/3">ชื่อ</th>
             <th className="border p-3 text-center">ประเภทการลา</th>
             <th className="border p-3 text-center">วันที่ลา</th>
-            <th className="border p-3 text-center">เวลาที่บันทึก</th>
+            <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
             <th className="border p-3 text-center">สถานะ</th>
             <th className="border p-3 text-center">การดำเนินการ</th>
           </tr>
@@ -129,7 +135,7 @@ const LeaveRequestList = () => {
                 </p>
               </td>
               <td className="border p-3 text-center">
-                {new Date(request.createdAt).toLocaleTimeString()}
+                {new Date(request.createdAt).toLocaleString()}
               </td>
               <td
                 className={`border p-3 text-center ${getStatusClass(
@@ -172,6 +178,12 @@ const LeaveRequestList = () => {
           ))}
         </tbody>
       </table>
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={confirmAction}
+        message={confirmMessage}
+      />
     </div>
   );
 };
