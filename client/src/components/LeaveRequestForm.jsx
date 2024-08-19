@@ -96,22 +96,42 @@ const LeaveRequestForm = ({ onSubmit }) => {
         required
         className="w-full p-2 border rounded"
       ></textarea>
-      <input
-        type="date"
-        name="startDate"
-        value={formData.startDate}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded"
-      />
-      <input
-        type="date"
-        name="endDate"
-        value={formData.endDate}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded"
-      />
+      <div className="flex justify-between items-center space-x-4">
+        <div className="flex-1">
+          <label
+            htmlFor="startDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            วันที่เริ่มต้น
+          </label>
+          <input
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleChange}
+            required
+            id="startDate"
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div className="flex-1">
+          <label
+            htmlFor="endDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            วันที่สิ้นสุด
+          </label>
+          <input
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleChange}
+            required
+            id="endDate"
+            className="w-full p-2 border rounded"
+          />
+        </div>
+      </div>
       <button
         type="submit"
         className="w-full p-2 bg-blue-500 text-white rounded"

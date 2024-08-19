@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="bg-gray-200 p-4 flex justify-between items-center shadow-md">
+      <div className="bg-gray-200 px-20 py-4 flex justify-between items-center shadow-md">
         <h1 className="text-2xl font-bold">ระบบขออนุญาตลาหยุด</h1>
         <div>
           <button
@@ -46,7 +46,7 @@ function App() {
           </button>
         </div>
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex-1 py-4 px-20">
         {showForm && (
           <div>
             <h2 className="text-xl text-center font-semibold mb-2">

@@ -97,8 +97,10 @@ const LeaveRequestList = () => {
               <td className="border p-3 w-1/3">{request.name}</td>
               <td className="border p-3">{request.leaveType}</td>
               <td className="border p-3">
-                {new Date(request.startDate).toLocaleDateString()} -
-                {new Date(request.endDate).toLocaleDateString()}
+                <p>
+                  {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
+                  {new Date(request.endDate).toLocaleDateString()}
+                </p>
               </td>
               <td className="border p-3">
                 {new Date(request.createdAt).toLocaleTimeString()}
