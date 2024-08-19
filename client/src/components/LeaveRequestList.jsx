@@ -10,12 +10,14 @@ const LeaveRequestList = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [confirmMessage, setConfirmMessage] = useState('');
+  const [loading, setLoading] = useState(false); // New state for loading
 
   useEffect(() => {
     fetchLeaveRequests();
   }, [searchName, searchDate, sortOrder]);
 
   const fetchLeaveRequests = async () => {
+    setLoading(true); // Set loading to true when starting to fetch data
     try {
       const response = await axios.get(
         'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
@@ -26,6 +28,8 @@ const LeaveRequestList = () => {
       setLeaveRequests(response.data);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
+    } finally {
+      setLoading(false); // Set loading to false once data fetching is complete
     }
   };
 
@@ -109,75 +113,83 @@ const LeaveRequestList = () => {
           <option value="asc">เก่าสุด</option>
         </select>
       </div>
-      <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="border p-3 text-center w-1/3">ชื่อ</th>
-            <th className="border p-3 text-center">ประเภทการลา</th>
-            <th className="border p-3 text-center">วันที่ลา</th>
-            <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
-            <th className="border p-3 text-center">สถานะ</th>
-            <th className="border p-3 text-center">การดำเนินการ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {leaveRequests.map((request, index) => (
-            <tr
-              key={request._id}
-              className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
-            >
-              <td className="border p-3 text-center w-1/3">{request.name}</td>
-              <td className="border p-3 text-center">{request.leaveType}</td>
-              <td className="border p-3 text-center">
-                <p>
-                  {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
-                  {new Date(request.endDate).toLocaleDateString()}
-                </p>
-              </td>
-              <td className="border p-3 text-center">
-                {new Date(request.createdAt).toLocaleString()}
-              </td>
-              <td
-                className={`border p-3 text-center ${getStatusClass(
-                  request.status
-                )}`}
-              >
-                {request.status}
-              </td>
-              <td className="border p-3 text-center flex space-x-2 justify-center">
-                {request.status === 'รอพิจารณา' && (
-                  <>
-                    <button
-                      onClick={() => handleStatusChange(request._id, 'อนุมัติ')}
-                      className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
-                        'อนุมัติ'
-                      )}`}
-                    >
-                      อนุมัติ
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleStatusChange(request._id, 'ไม่อนุมัติ')
-                      }
-                      className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
-                        'ไม่อนุมัติ'
-                      )}`}
-                    >
-                      ไม่อนุมัติ
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={() => handleDelete(request._id)}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
-                >
-                  ลบ
-                </button>
-              </td>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-96">Loading...</div>
+      ) : (
+        <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="border p-3 text-center w-1/3">ชื่อ</th>
+              <th className="border p-3 text-center">ประเภทการลา</th>
+              <th className="border p-3 text-center">วันที่ลา</th>
+              <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
+              <th className="border p-3 text-center">สถานะ</th>
+              <th className="border p-3 text-center">การดำเนินการ</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {leaveRequests.map((request, index) => (
+              <tr
+                key={request._id}
+                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+              >
+                <td className="border p-3 text-center w-1/3">{request.name}</td>
+                <td className="border p-3 text-center">{request.leaveType}</td>
+                <td className="border p-3 text-center">
+                  <p>
+                    {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
+                    {new Date(request.endDate).toLocaleDateString()}
+                  </p>
+                </td>
+                <td className="border p-3 text-center">
+                  {new Date(request.createdAt).toLocaleString()}
+                </td>
+                <td
+                  className={`border p-3 text-center ${getStatusClass(
+                    request.status
+                  )}`}
+                >
+                  {request.status}
+                </td>
+                <td className="border p-3 text-center flex space-x-2 justify-center">
+                  {request.status === 'รอพิจารณา' && (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleStatusChange(request._id, 'อนุมัติ')
+                        }
+                        className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                          'อนุมัติ'
+                        )}`}
+                      >
+                        อนุมัติ
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleStatusChange(request._id, 'ไม่อนุมัติ')
+                        }
+                        className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                          'ไม่อนุมัติ'
+                        )}`}
+                      >
+                        ไม่อนุมัติ
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => handleDelete(request._id)}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
+                  >
+                    ลบ
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
