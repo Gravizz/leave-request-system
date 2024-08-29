@@ -1,8 +1,47 @@
-# React + Vite
+# Leave Request System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a simple leave request system, created as a task for learning Vite and React.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Frontend: React
+- Build Tool: Vite
+- CSS Framework: Tailwind CSS
+- Libraries:
+  - @headlessui/react
+  - @tailwindcss/forms
+  - axios
+- Development Tools:
+  - ESLint
+  - Prettier
+
+## Backend
+
+- Server: Node.js
+- Framework: Express.js
+- Database: MongoDB
+- ORM: Mongoose
+
+## Development Environment
+
+- Editor: [Your Editor of choice]
+- Operating System: [Your Operating System]
+
+## Features
+
+- [List the features of your project]
+
+## Getting Started
+
+- Clone the repository: `git clone https://github.com/your-username/your-repo-name.git`
+- Install dependencies: `npm install` or `yarn install`
+- Start the development server: `npm run dev` or `yarn dev`
+
+## Contributing
+
+- Contributions are welcome!
+- Please submit a pull request with a clear description of the changes.
+
+## License
+
+- Gravizz

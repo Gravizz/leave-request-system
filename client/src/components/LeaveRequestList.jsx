@@ -90,24 +90,24 @@ const LeaveRequestList = () => {
 
   return (
     <div className="p-4">
-      <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+      <div className="mb-4 flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
         <input
           type="text"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
           placeholder="ค้นหาตามชื่อ"
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="date"
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="desc">ล่าสุด</option>
           <option value="asc">เก่าสุด</option>
@@ -118,116 +118,122 @@ const LeaveRequestList = () => {
         <div className="flex justify-center items-center h-96">Loading...</div>
       ) : (
         <>
-          {/* Desktop Table */}
-          <table className="hidden md:table w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border p-3 text-center w-1/3">ชื่อ</th>
-                <th className="border p-3 text-center">ประเภทการลา</th>
-                <th className="border p-3 text-center">วันที่ลา</th>
-                <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
-                <th className="border p-3 text-center">สถานะ</th>
-                <th className="border p-3 text-center">การดำเนินการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaveRequests.map((request, index) => (
-                <tr
-                  key={request._id}
-                  className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
-                >
-                  <td className="border p-3 text-center w-1/3">
-                    {request.name}
-                  </td>
-                  <td className="border p-3 text-center">
-                    {request.leaveType}
-                  </td>
-                  <td className="border p-3 text-center">
-                    <p>
-                      {new Date(request.startDate).toLocaleDateString()}{' '}
-                      ถึงวันที่ {new Date(request.endDate).toLocaleDateString()}
-                    </p>
-                  </td>
-                  <td className="border p-3 text-center">
-                    {new Date(request.createdAt).toLocaleString()}
-                  </td>
-                  <td
-                    className={`border p-3 text-center ${getStatusClass(
-                      request.status
-                    )}`}
-                  >
-                    {request.status}
-                  </td>
-                  <td className="border p-3 text-center flex space-x-2 justify-center">
-                    {request.status === 'รอพิจารณา' && (
-                      <>
-                        <button
-                          onClick={() =>
-                            handleStatusChange(request._id, 'อนุมัติ')
-                          }
-                          className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
-                            'อนุมัติ'
-                          )}`}
-                        >
-                          อนุมัติ
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleStatusChange(request._id, 'ไม่อนุมัติ')
-                          }
-                          className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
-                            'ไม่อนุมัติ'
-                          )}`}
-                        >
-                          ไม่อนุมัติ
-                        </button>
-                      </>
-                    )}
-                    <button
-                      onClick={() => handleDelete(request._id)}
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
-                    >
-                      ลบ
-                    </button>
-                  </td>
+          {/* Desktop */}
+          <div className="hidden md:block">
+            <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border p-3 text-center w-1/3">ชื่อ</th>
+                  <th className="border p-3 text-center">ประเภทการลา</th>
+                  <th className="border p-3 text-center">วันที่ลา</th>
+                  <th className="border p-3 text-center">
+                    วันและเวลาที่บันทึก
+                  </th>
+                  <th className="border p-3 text-center">สถานะ</th>
+                  <th className="border p-3 text-center">การดำเนินการ</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Mobile Block Layout */}
+              </thead>
+              <tbody>
+                {leaveRequests.map((request, index) => (
+                  <tr
+                    key={request._id}
+                    className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                  >
+                    <td className="border p-3 text-center w-1/3">
+                      {request.name}
+                    </td>
+                    <td className="border p-3 text-center">
+                      {request.leaveType}
+                    </td>
+                    <td className="border p-3 text-center">
+                      <p>
+                        {new Date(request.startDate).toLocaleDateString()}{' '}
+                        ถึงวันที่{' '}
+                        {new Date(request.endDate).toLocaleDateString()}
+                      </p>
+                    </td>
+                    <td className="border p-3 text-center">
+                      {new Date(request.createdAt).toLocaleString()}
+                    </td>
+                    <td
+                      className={`border p-3 text-center ${getStatusClass(
+                        request.status
+                      )}`}
+                    >
+                      {request.status}
+                    </td>
+                    <td className="border p-3 text-center flex space-x-2 justify-center">
+                      {request.status === 'รอพิจารณา' && (
+                        <>
+                          <button
+                            onClick={() =>
+                              handleStatusChange(request._id, 'อนุมัติ')
+                            }
+                            className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                              'อนุมัติ'
+                            )}`}
+                          >
+                            อนุมัติ
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleStatusChange(request._id, 'ไม่อนุมัติ')
+                            }
+                            className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                              'ไม่อนุมัติ'
+                            )}`}
+                          >
+                            ไม่อนุมัติ
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleDelete(request._id)}
+                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
+                      >
+                        ลบ
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Moblie */}
           <div className="md:hidden space-y-4">
             {leaveRequests.map((request) => (
               <div
                 key={request._id}
-                className="bg-white shadow-md rounded-md p-4 space-y-2"
+                className="border p-4 rounded-md shadow-md bg-white space-y-4"
               >
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="font-semibold">ชื่อ:</p>
                   <p>{request.name}</p>
                 </div>
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="font-semibold">ประเภทการลา:</p>
                   <p>{request.leaveType}</p>
                 </div>
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="font-semibold">วันที่ลา:</p>
                   <p>
                     {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
                     {new Date(request.endDate).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="font-semibold">วันและเวลาที่บันทึก:</p>
                   <p>{new Date(request.createdAt).toLocaleString()}</p>
                 </div>
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="font-semibold">สถานะ:</p>
-                  <p className={getStatusClass(request.status)}>
+                  <p
+                    className={`p-2 rounded ${getStatusClass(request.status)}`}
+                  >
                     {request.status}
                   </p>
                 </div>
-                <div className="flex justify-center space-x-4">
+                <div className="flex space-x-2">
                   {request.status === 'รอพิจารณา' && (
                     <>
                       <button
