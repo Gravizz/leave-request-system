@@ -10,14 +10,14 @@ const LeaveRequestList = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [confirmMessage, setConfirmMessage] = useState('');
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchLeaveRequests();
   }, [searchName, searchDate, sortOrder]);
 
   const fetchLeaveRequests = async () => {
-    setLoading(true); // Set loading to true when starting to fetch data
+    setLoading(true);
     try {
       const response = await axios.get(
         'https://leave-request-system-server-cj6i.vercel.app/api/leave-requests',
@@ -29,7 +29,7 @@ const LeaveRequestList = () => {
     } catch (error) {
       console.error('Error fetching leave requests:', error);
     } finally {
-      setLoading(false); // Set loading to false once data fetching is complete
+      setLoading(false);
     }
   };
 
@@ -73,7 +73,7 @@ const LeaveRequestList = () => {
       case 'ไม่อนุมัติ':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800'; // สำหรับ 'รอพิจารณา'
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -84,30 +84,30 @@ const LeaveRequestList = () => {
       case 'ไม่อนุมัติ':
         return 'bg-red-500 hover:bg-red-600';
       default:
-        return 'bg-yellow-500 hover:bg-yellow-600'; // สำหรับ 'รอพิจารณา'
+        return 'bg-yellow-500 hover:bg-yellow-600';
     }
   };
 
   return (
     <div className="p-4">
-      <div className="mb-4 flex space-x-4">
+      <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
         <input
           type="text"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
           placeholder="ค้นหาตามชื่อ"
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         />
         <input
           type="date"
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         />
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
         >
           <option value="desc">ล่าสุด</option>
           <option value="asc">เก่าสุด</option>
@@ -117,42 +117,117 @@ const LeaveRequestList = () => {
       {loading ? (
         <div className="flex justify-center items-center h-96">Loading...</div>
       ) : (
-        <table className="w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border p-3 text-center w-1/3">ชื่อ</th>
-              <th className="border p-3 text-center">ประเภทการลา</th>
-              <th className="border p-3 text-center">วันที่ลา</th>
-              <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
-              <th className="border p-3 text-center">สถานะ</th>
-              <th className="border p-3 text-center">การดำเนินการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaveRequests.map((request, index) => (
-              <tr
+        <>
+          {/* Desktop Table */}
+          <table className="hidden md:table w-full border-collapse bg-white shadow-md rounded-md overflow-hidden">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border p-3 text-center w-1/3">ชื่อ</th>
+                <th className="border p-3 text-center">ประเภทการลา</th>
+                <th className="border p-3 text-center">วันที่ลา</th>
+                <th className="border p-3 text-center">วันและเวลาที่บันทึก</th>
+                <th className="border p-3 text-center">สถานะ</th>
+                <th className="border p-3 text-center">การดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaveRequests.map((request, index) => (
+                <tr
+                  key={request._id}
+                  className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                >
+                  <td className="border p-3 text-center w-1/3">
+                    {request.name}
+                  </td>
+                  <td className="border p-3 text-center">
+                    {request.leaveType}
+                  </td>
+                  <td className="border p-3 text-center">
+                    <p>
+                      {new Date(request.startDate).toLocaleDateString()}{' '}
+                      ถึงวันที่ {new Date(request.endDate).toLocaleDateString()}
+                    </p>
+                  </td>
+                  <td className="border p-3 text-center">
+                    {new Date(request.createdAt).toLocaleString()}
+                  </td>
+                  <td
+                    className={`border p-3 text-center ${getStatusClass(
+                      request.status
+                    )}`}
+                  >
+                    {request.status}
+                  </td>
+                  <td className="border p-3 text-center flex space-x-2 justify-center">
+                    {request.status === 'รอพิจารณา' && (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleStatusChange(request._id, 'อนุมัติ')
+                          }
+                          className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                            'อนุมัติ'
+                          )}`}
+                        >
+                          อนุมัติ
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusChange(request._id, 'ไม่อนุมัติ')
+                          }
+                          className={`text-white p-2 rounded-md shadow transition ${getButtonClass(
+                            'ไม่อนุมัติ'
+                          )}`}
+                        >
+                          ไม่อนุมัติ
+                        </button>
+                      </>
+                    )}
+                    <button
+                      onClick={() => handleDelete(request._id)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 p-2 rounded-md shadow transition"
+                    >
+                      ลบ
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Mobile Block Layout */}
+          <div className="md:hidden space-y-4">
+            {leaveRequests.map((request) => (
+              <div
                 key={request._id}
-                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                className="bg-white shadow-md rounded-md p-4 space-y-2"
               >
-                <td className="border p-3 text-center w-1/3">{request.name}</td>
-                <td className="border p-3 text-center">{request.leaveType}</td>
-                <td className="border p-3 text-center">
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">ชื่อ:</p>
+                  <p>{request.name}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">ประเภทการลา:</p>
+                  <p>{request.leaveType}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">วันที่ลา:</p>
                   <p>
                     {new Date(request.startDate).toLocaleDateString()} ถึงวันที่{' '}
                     {new Date(request.endDate).toLocaleDateString()}
                   </p>
-                </td>
-                <td className="border p-3 text-center">
-                  {new Date(request.createdAt).toLocaleString()}
-                </td>
-                <td
-                  className={`border p-3 text-center ${getStatusClass(
-                    request.status
-                  )}`}
-                >
-                  {request.status}
-                </td>
-                <td className="border p-3 text-center flex space-x-2 justify-center">
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">วันและเวลาที่บันทึก:</p>
+                  <p>{new Date(request.createdAt).toLocaleString()}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">สถานะ:</p>
+                  <p className={getStatusClass(request.status)}>
+                    {request.status}
+                  </p>
+                </div>
+                <div className="flex justify-center space-x-4">
                   {request.status === 'รอพิจารณา' && (
                     <>
                       <button
@@ -183,11 +258,11 @@ const LeaveRequestList = () => {
                   >
                     ลบ
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </>
       )}
 
       <Modal

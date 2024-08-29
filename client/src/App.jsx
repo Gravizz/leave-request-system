@@ -46,7 +46,7 @@ function App() {
           </button>
         </div>
       </div>
-      <div className="flex-1 py-4 px-20">
+      <div className="flex-1 p-4">
         {showForm && (
           <div>
             <h2 className="text-xl text-center font-semibold mb-2">
